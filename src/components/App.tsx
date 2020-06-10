@@ -4,6 +4,7 @@ import axios from 'axios'
 import Container from '@material-ui/core/Container';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Navbar from './Navbar'
+
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -16,16 +17,13 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 
-
-export interface IAppProps {
-}
-
 const useStyles1 = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       '& > *': {
         margin: theme.spacing(1),
-        width: '80ch',
+        width: '100%',
+        minWidth:'50ch'
       },
     },
   }),
@@ -36,6 +34,7 @@ const useStyles2 = makeStyles((theme: Theme) =>
     formControl: {
       margin: theme.spacing(1),
       minWidth: 120,
+      display:'block'
     },
     selectEmpty: {
       marginTop: theme.spacing(2),
@@ -59,7 +58,7 @@ const useStyles3 = makeStyles((theme: Theme) =>
   }),
 );
 
-const App = (props: IAppProps ) => {
+const App = () => {
 
     const [ searchText, updateText ] = useState('');
     const [ coordinatesObj, updateCoord ] = useState({lat:0, lng:0});
@@ -118,7 +117,7 @@ const App = (props: IAppProps ) => {
   
         updateRender(searchResults)
     }, [searchResults])
-
+    
     const classes1 = useStyles1();
     const classes2 = useStyles2();
     const classes3 = useStyles3();
@@ -129,10 +128,10 @@ const App = (props: IAppProps ) => {
         <br /> <br />
       <React.Fragment>
       <CssBaseline />
-      <Container fixed>
-          <div>
-          <TextField id="outlined-basic" value={searchText} onChange={(e) => updateSearch(e.target.value) }  className={classes1.root} label="Type complete address to see results" variant="outlined" />
-          <FormControl required className={classes2.formControl}>
+      <Container maxWidth="sm">
+          <div> 
+      <TextField id="outlined-basic" value={searchText} onChange={(e) => updateSearch(e.target.value) }  className={classes1.root} label="Type complete address to see results" variant="outlined" />
+      <FormControl required className={classes2.formControl}>
         <InputLabel id="demo-simple-select-filled-label">Radius</InputLabel>
         <Select
           labelId="demo-simple-select-filled-label"

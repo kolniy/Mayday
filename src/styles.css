@@ -1,0 +1,12 @@
+.container {
+    width: 144rem;
+    margin: 0 auto;
+}
+
+.some-text{
+    color: blue;
+}
+
+body{
+    background-color: blue;
+}
