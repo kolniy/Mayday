@@ -1,12 +1,38 @@
-.container {
-    width: 144rem;
-    margin: 0 auto;
+.content-height {
+    min-height: 100vh;
 }
 
-.some-text{
-    color: blue;
+body {
+    margin: 0;
+    padding: 0;
+}
+.box-layout {
+    background-color: #FFFFFF;
+    background-size: cover;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-body{
-    background-color: blue;
+.box-layout__box {
+      background: #F5F5F5;
+      border-radius: 3px;
+      padding: 40px 3px;
+      text-align: center;
+      width: 20rem;
+      box-shadow:  0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);  
+}
+
+.box-layout__typo {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.navbar-buttons {
+    padding: 30px 50px;
+}
+
+.float-right {
+    float: right;
 }

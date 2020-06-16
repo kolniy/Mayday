@@ -3,60 +3,14 @@ import { useState, useEffect } from 'react';
 import axios from 'axios'
 import Container from '@material-ui/core/Container';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Navbar from './Navbar'
-
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Typography from '@material-ui/core/Typography';
-
-const useStyles1 = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      '& > *': {
-        margin: theme.spacing(1),
-        width: '100%',
-        minWidth:'50ch'
-      },
-    },
-  }),
-);
-
-const useStyles2 = makeStyles((theme: Theme) =>
-  createStyles({
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-      display:'block'
-    },
-    selectEmpty: {
-      marginTop: theme.spacing(2),
-    },
-  }),
-);
-
-const useStyles3 = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: '100%',
-      maxWidth: '60ch',
-      backgroundColor: theme.palette.background.paper,
-      maxHeight:'50ch',
-      padding: '4ch',
-      overflowY: 'scroll'
-    },
-    inline: {
-      display: 'block',
-    },
-  }),
-);
+import Button from '@material-ui/core/Button';
+import datebase from '../firestore/firestore'
+import Navbar from './Navbar';
+import TextForm from './TextForm';
+import RadiusForm from './RadiusForm';
+import HospitalList from './HospitalList';
+import CategoryForm from './CategoryForm';
+import redirectUnAuthUser from '../utils/redirectUnAuthUser';
 
 const App = () => {
 
@@ -64,7 +18,22 @@ const App = () => {
     const [ coordinatesObj, updateCoord ] = useState({lat:0, lng:0});
     const [ searchResults, updateSearchResults ] = useState([]);
     const [ searchRadius, updateSearchRadius ] = useState(5000);
-    const [searchToRender, updateRender ] = useState([])
+    const [searchToRender, updateRender ] = useState([]);
+    const [searchCategory, updateCategory] = useState('hospital');
+
+    redirectUnAuthUser()
+
+    const checkItemAndPopulate = () => {
+        const item = JSON.parse(localStorage.getItem('item'))
+        if(item){
+            updateSearchRadius(item.radius)
+            updateText(item.address)
+            updateCategory(item.category)
+           localStorage.removeItem('item')
+        }
+    }
+
+    checkItemAndPopulate()
 
     const updateSearch = (text:string) => {
         updateText(text)
@@ -73,6 +42,28 @@ const App = () => {
 
     const updateRadius = (radius:any) => {
         updateSearchRadius(radius)
+    }
+
+    const updateCategoryData = (value:string) => {
+        updateCategory(value)
+    }
+
+    const saveSearch = () => {  
+        if(searchText.length === 0){
+            return alert('Search Text cannot be empty')
+        }
+        const uid = localStorage.getItem('userInfo')
+        
+        const searchQuery = {
+            'address': searchText,
+            'radius': searchRadius,
+            'category': searchCategory,
+        }
+        datebase.collection(`users/${uid}/savedLocation`).add(searchQuery).then(() => {
+            alert('saved succesfully')
+        }).catch((err) => {
+            alert(`Error adding document ${err.message}`)
+        })
     }
 
     const getCordinates = (search:string) => {
@@ -93,7 +84,7 @@ const App = () => {
     const getNearbyHospitals = () => {
         const { lat, lng } = coordinatesObj
         const proxyurl = "https://cors-anywhere.herokuapp.com/";
-        const apiurl = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=${searchRadius}&type=hospital&key=AIzaSyA3ixrfQoLyuIfLA0WRg_mfllQuC-lWHnA`
+        const apiurl = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=${searchRadius}&type=${searchCategory}&key=AIzaSyA3ixrfQoLyuIfLA0WRg_mfllQuC-lWHnA`
         return axios.request({
             method:'get',
             url: proxyurl + apiurl
@@ -114,73 +105,32 @@ const App = () => {
     }, [searchRadius])
 
     useEffect(() => {
-  
         updateRender(searchResults)
     }, [searchResults])
-    
-    const classes1 = useStyles1();
-    const classes2 = useStyles2();
-    const classes3 = useStyles3();
+
+    useEffect(() => {
+      getNearbyHospitals()
+    }, [searchCategory])
 
   return (
       <div>
         <Navbar />
         <br /> <br />
-      <React.Fragment>
+     <div className={"content-height"} >
+       <React.Fragment>
       <CssBaseline />
       <Container maxWidth="sm">
-          <div> 
-      <TextField id="outlined-basic" value={searchText} onChange={(e) => updateSearch(e.target.value) }  className={classes1.root} label="Type complete address to see results" variant="outlined" />
-      <FormControl required className={classes2.formControl}>
-        <InputLabel id="demo-simple-select-filled-label">Radius</InputLabel>
-        <Select
-          labelId="demo-simple-select-filled-label"
-          id="demo-simple-select-filled"
-          value={searchRadius}
-          onChange={(e) => { updateRadius(e.target.value) }}
-          className={classes2.selectEmpty}
-        >
-          <MenuItem value={5000}>5000</MenuItem>
-          <MenuItem value={10000}>10000</MenuItem>
-          <MenuItem value={20000}>20000</MenuItem>
-          <MenuItem value={30000}>30000</MenuItem>
-          <MenuItem value={40000}>40000</MenuItem>
-          <MenuItem value={50000}>50000</MenuItem>
-        </Select>
-        <FormHelperText>Required</FormHelperText>
-      </FormControl>
-      <List className={classes3.root}>
-        {searchResults.length === 0 && <p>No Search Results For That Location</p>}
-        {
-          searchToRender.map((details) => {
-             return (
-               <div key={details.id}>
-              <ListItem alignItems="flex-start">
-              <ListItemText
-                primary={<p><b>Hospital Name</b>: {details.name}</p>}
-                secondary={
-                  <React.Fragment>
-                    <Typography
-                      component="span"
-                      variant="body2"
-                      className={classes3.inline}
-                      color="textPrimary"
-                    >
-                      Complete Address - 
-                    </Typography>
-                    {" "+ details.vicinity}
-                  </React.Fragment>
-                }
-              />
-            </ListItem>
-            </div>
-             )
-            })
-        }
-    </List>
-    </div>
+      <TextForm text={searchText} changeText={updateSearch} />
+      <RadiusForm searchRad={searchRadius} updateRad={updateRadius} />
+      <CategoryForm category={searchCategory} updateCat={updateCategoryData} />
+      <Button variant="contained" onClick={saveSearch} color="primary">
+            Save This Search.
+        </Button> 
+        <br/> <br />
+      <HospitalList searchToRen={searchToRender} /> 
       </Container>
     </React.Fragment>
+    </div>
     </div>
   );
 }
