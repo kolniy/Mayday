@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -52,50 +53,25 @@ const SavedSearch:React.FC<Props> = ({ savedSearch }) => {
       {savedSearch.length === 0 && <p>No Saved Search</p>}
         {savedSearch.map((search) => {
             return (
-            <ListItem button key={search.id} alignItems="flex-start" onClick={(e) => saveSearch(search.id)}>
-                <ListItemText
-                primary={<p><b>Facility Name</b>: {search.name}</p>}
-                secondary={
-                  <React.Fragment>
-                    <Typography
-                      component="span"
-                      variant="body2"
-                      className={classes.inline}
-                      color="textPrimary"
-                    >
-                      Complete Address - 
-                    </Typography>
-                    {" "+ search.address}
-                  </React.Fragment>
-                }
-              />
-              <ListItemText secondary={
-                  <React.Fragment>
-                    <Typography
-                      component="span"
-                      variant="body2"
-                      className={classes.inline}
-                      color="textPrimary"
-                    >
-                      Radius - 
-                    </Typography>
-                    {" "+ search.radius}
-                  </React.Fragment>
-                } />
-                 <ListItemText secondary={
-                  <React.Fragment>
-                    <Typography
-                      component="span"
-                      variant="body2"
-                      className={classes.inline}
-                      color="textPrimary"
-                    >
-                      Category - 
-                    </Typography>
-                    {" "+ search.category}
-                  </React.Fragment>
-                } />
-         </ListItem>
+              <div className="search-list" key={search.id} onClick={(e:any) => saveSearch(search.id)}>
+                <div className="facility-address">
+                 <Typography variant="button" display="block" gutterBottom>
+                   {search.address}
+                 </Typography>
+                </div>
+                <div className="search-details">
+                  <div className="radius">
+                  <Typography variant="caption" display="block" gutterBottom>
+                      <b>Radius: </b>{search.radius}
+                   </Typography>
+                  </div>
+                  <div className="category">
+                  <Typography variant="caption" display="block" gutterBottom>
+                      <b>Category: </b>{search.category}
+                   </Typography>
+                  </div>
+                </div>
+              </div>
             )
         })}
       </List>
@@ -104,3 +80,53 @@ const SavedSearch:React.FC<Props> = ({ savedSearch }) => {
 }
 
 export { SavedSearch as default }
+
+
+
+
+
+{/* <ListItem button key={search.id} alignItems="flex-start" onClick={(e) => saveSearch(search.id)}>
+<ListItemText
+primary={<p><b>Facility Name</b>: {search.name}</p>}
+secondary={
+  <React.Fragment>
+    <Typography
+      component="span"
+      variant="body2"
+      className={classes.inline}
+      color="textPrimary"
+    >
+      Complete Address - 
+    </Typography>
+    {" "+ search.address}
+  </React.Fragment>
+}
+/>
+<ListItemText secondary={
+  <React.Fragment>
+    <Typography
+      component="span"
+      variant="body2"
+      className={classes.inline}
+      color="textPrimary"
+    >
+      Radius - 
+    </Typography>
+    {" "+ search.radius}
+  </React.Fragment>
+} />
+ <ListItemText secondary={
+  <React.Fragment>
+    <Typography
+      component="span"
+      variant="body2"
+      className={classes.inline}
+      color="textPrimary"
+    >
+      Category - 
+    </Typography>
+    {" "+ search.category}
+  </React.Fragment>
+} />
+</ListItem>
+) */}

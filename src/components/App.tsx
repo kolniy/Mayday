@@ -14,26 +14,14 @@ import redirectUnAuthUser from '../utils/redirectUnAuthUser';
 
 const App = () => {
 
-    const [ searchText, updateText ] = useState('');
-    const [ coordinatesObj, updateCoord ] = useState({lat:0, lng:0});
-    const [ searchResults, updateSearchResults ] = useState([]);
-    const [ searchRadius, updateSearchRadius ] = useState(5000);
-    const [searchToRender, updateRender ] = useState([]);
+    const [searchText, updateText] = useState('');
+    const [coordinatesObj, updateCoord] = useState({lat:0, lng:0});
+    const [searchResults, updateSearchResults] = useState([]);
+    const [searchRadius, updateSearchRadius] = useState(5000);
+    const [searchToRender, updateRender] = useState([]);
     const [searchCategory, updateCategory] = useState('hospital');
 
     redirectUnAuthUser()
-
-    const checkItemAndPopulate = () => {
-        const item = JSON.parse(localStorage.getItem('item'))
-        if(item){
-            updateSearchRadius(item.radius)
-            updateText(item.address)
-            updateCategory(item.category)
-           localStorage.removeItem('item')
-        }
-    }
-
-    checkItemAndPopulate()
 
     const updateSearch = (text:string) => {
         updateText(text)
@@ -47,6 +35,28 @@ const App = () => {
     const updateCategoryData = (value:string) => {
         updateCategory(value)
     }
+
+    const checkItemAndPopulate = () => {
+        const item = JSON.parse(localStorage.getItem('item'))
+        if(item != null){
+           updateText(item.address)
+           updateSearchRadius(item.radius)
+           updateCategory(item.category)
+           localStorage.removeItem('item')
+        }
+    }
+
+    checkItemAndPopulate()
+
+    document.onreadystatechange = () => {
+        if (document.readyState === 'interactive') {
+          if(searchText.length > 0){
+            setTimeout(() => {
+                updateSearch(searchText + '  ')
+               }, 3000);
+          }
+        }
+      };
 
     const saveSearch = () => {  
         if(searchText.length === 0){

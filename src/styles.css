@@ -33,6 +33,35 @@ body {
     padding: 30px 50px;
 }
 
-.float-right {
+.float-right{
     float: right;
+}
+
+.search-list {
+    padding: 10px 15px;
+    border-radius: 3px;
+    transition: all .4s;
+}
+
+.search-list:hover{
+    background-color: #F1F1F1;
+}
+
+.search-details {
+    display: flex;
+    align-content: space-around;
+}
+
+.radius {
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 20px;
+}
+
+.category {
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 20px;
 }
